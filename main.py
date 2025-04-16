@@ -11,14 +11,36 @@ from fastapi import FastAPI
 app = FastAPI()
 
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 def read_root():
-    return {"Hello": "World"}
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+    html = """
+    <!doctype html>
+    <html>
+    <head>
+    <title>Our Restaurant</title>
+    <meta name="description" content="Our uni restaurants">
+    <meta name="keywords" content="uni restaurant menu">
+    </head>
+    <body>
+    Καλώς ήρθατε στο μενού του εστιατορίου του 
+    <a href="/uni/auth">
+    Αριστοτέλειου Πανεπιστημίου Θεσσαλονίκης
+    </a>
+    <ul>
+    <li><a href="/uni/auth?menu_time=ΠΡΩ">
+    Πρωινό
+    </a></li>
+    <li><a href="/uni/auth?menu_time=ΜΕΣ">
+    Μεσημεριανό
+    </a></li>
+    <li><a href="/uni/auth?menu_time=ΒΡΑΔ">
+    Βραδινό
+    </a></li>
+    </ul>
+    </body>
+    </html>
+"""
+    return html
 
 @app.get("/uni/pamak", response_class=HTMLResponse)
 def menu_pamak():
