@@ -40,7 +40,6 @@ def refresh_database():
     soup = BeautifulSoup(html_doc, 'html.parser')
     x = "wp-block-kadence-pane"
     days = soup.find_all("div", class_=x)
-    breakfasts = []
     weekdays = ['ΔΕΥΤΕΡΑ', 'ΤΡΙΤΗ', 'ΤΕΤΑΡΤΗ', 'ΠΕΜΠΤΗ', 'ΠΑΡΑΣΚΕΥΗ', 'ΣΑΒΒΑΤΟ', 'ΚΥΡΙΑΚΗ']
     t = time.time()
     for i, day in enumerate(days): 
@@ -105,7 +104,20 @@ def parse_lunch_dinner(options):
     if first_dish_appeared is not None and main_dish_appeared is not None and salad_appeared is not None:
         first_dish = [option for option in options[first_dish_appeared+2:main_dish_appeared-1]]
         main_dish = [option for option in options[main_dish_appeared+2:salad_appeared-1]]
-    return first_dish, main_dish
+
+    return cleanup_authmenulist(first_dish), cleanup_authmenulist(main_dish)
+
+def cleanup_authmenulist(original_list):
+    previous = ''
+    final_list = []
+    for el in original_list:
+        final_list.append(el)
+        if el in previous:
+            final_list.remove(previous)
+        previous = el
+
+    return final_list
+
     
 def connect_database():
     con = sqlite3.connect("restaurant.db")
