@@ -26,11 +26,13 @@ def menu_pamak():
     return r.text
 
 @app.get("/uni/auth")
-def menu_auth(filter:str=""):
+def menu_auth(filter:str="", menu_time:str=""):
     con = connect_database()
     dishes = get_dishes(con)
-    filtered_dishes = [dish for dish in dishes if filter in str(dish).lower()]
-    return [dishrow_toobject(dish) for dish in filtered_dishes]
+    filtered_dishes = [dish for dish in dishes if filter.upper() in str(dish).upper()]
+    dish_objs = [dishrow_toobject(dish) for dish in filtered_dishes]
+    filtered_objs = [dish for dish in dish_objs if menu_time.upper() in dish['menu_time'].upper()]
+    return filtered_objs 
     
 @app.get("/refreshdatabase")
 def refresh_database():
@@ -117,7 +119,6 @@ def cleanup_authmenulist(original_list):
         previous = el
 
     return final_list
-
     
 def connect_database():
     con = sqlite3.connect("restaurant.db")
